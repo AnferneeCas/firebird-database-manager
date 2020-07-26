@@ -1,0 +1,53 @@
+<html lang="en">
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+  </head>
+  <body>
+    <div class="container-fluid h-100">
+      <div class="row justify-content-center align-items-center h-100">
+        <div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3">
+          <form action="connect" method="POST">
+            <div class="form-group">
+              <input
+                name="name"
+                class="form-control form-control-lg"
+                placeholder="test"
+                type="text"
+              />
+            </div>
+            <div class="form-group">
+              <input
+                class="form-control form-control-lg"
+                placeholder="Usuario"
+                type="text"
+                name="user"
+              />
+            </div>
+            <div class="form-group">
+              <input
+                class="form-control form-control-lg"
+                placeholder="password"
+                type="password"
+                name="pass"
+              />
+            </div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-info btn-lg btn-block">
+                Conectar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

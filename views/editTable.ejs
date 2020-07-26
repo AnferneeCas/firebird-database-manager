@@ -97,9 +97,73 @@
             </button>
           </div>
         </div>
+
       </form>
     </div>
+ <table class="table table-dark" id="table">
+      <thead>
+        <tr>
+          
+          <% for(var i=0; i<data.fields.length; i++) {%>
+           
+           
+           
+              <th scope="col" class="text-center"> <%= data.fields[i].RDB$FIELD_NAME %></th>
+       
+  
+       
+         
+         
+        
+        <% } %>  
+        <th scope="col" class="text-center">Acciones</th>   
+        </tr>
+      </thead>
+      <tbody>
+        <% for(var i=0; i<data.data.length; i++) {%>
+          <tr>
+            <% Object.keys(data.data[i]).forEach(function(key) { %> 
+           
+              <td class="text-center"> <%= data.data[i][key] %> </td>
+          <% }) %>
+  
+       
+          <td class="text-center"><button class="btn btn-danger deleteEntry" data-object="<%= JSON.stringify(data.data[i])%>">Borrar</button></td>
+          </tr>
+        <% } %>
+         
 
+
+
+        <tr>
+        <% for(var i=0; i<data.fields.length; i++) {%>
+           
+           
+           
+          
+   
+
+   
+     
+      <td class="text-center"> 
+
+          
+        <input type="text" class="form-control newEntry" data-key="<%=data.fields[i].RDB$FIELD_NAME%>" >
+     
+         </td>
+  
+     
+    
+    <% } %>  
+    <td class="text-center"><button class="btn btn-success addEntry" id="addEntry"data-name="<%= data.name%>" data-object="<%= JSON.stringify(data.data[i])%>">Agregar</button></td>
+
+  </tr>
+     
+        
+
+
+      </tbody>
+    </table>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
     <script src="/js/editTable.js"></script>
   </body>

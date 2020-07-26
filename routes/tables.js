@@ -127,7 +127,28 @@ router.get("/edit/:name", async function (req, res) {
         res.sendStatus(500);
       } else {
         data.fields = result;
-        res.render("editTable", { data: data });
+
+        dbRef.query(`SELECT * FROM ${req.params.name}`, function (err, result) {
+          if (err) {
+            console.log(err);
+          } else {
+            result.forEach((res) => {
+              Object.keys(res).forEach(function (key, index) {
+                // key: the name of the object key
+                // index: the ordinal position of the key within the object
+                if (Buffer.isBuffer(res[key])) {
+                  res[key] = res[key].toString("utf8").trim();
+                }
+              });
+            });
+            data.data = result;
+            console.log(data);
+            console.log(result);
+            res.render("editTable", { data: data });
+            // console.log(result[0].TEXT.toString("utf8"));
+            // console.log(Buffer.isBuffer(result[0].TEXT));
+          }
+        });
       }
     }
   );
@@ -159,6 +180,32 @@ router.post("/add/:name/:fieldname", async function (req, res) {
         res.sendStatus(500);
       } else {
         res.redirect("/tables/edit/" + req.params.name);
+      }
+    }
+  );
+  // dbRef.query(`insert into TEST (ID, TEXT) values (3,'Anfernee234')`, function (
+  //   err,
+  //   result
+  // ) {
+  //   if (err) {
+  //     console.log(err);
+  //   } else {
+  //     console.log(result);
+  //   }
+  // });
+});
+router.post("/add/entry", async function (req, res) {
+  var dbconnection = JSON.parse(req.cookies.dbconnection);
+  await connectToDB(dbconnection);
+  var body = req.body;
+  dbRef.query(
+    `insert into ${body.name} (${body.fields}) values (${req.body.values})`,
+    function (err, result) {
+      if (err) {
+        console.log(err);
+        res.sendStatus(500);
+      } else {
+        res.redirect("/tables/edit/" + body.name);
       }
     }
   );

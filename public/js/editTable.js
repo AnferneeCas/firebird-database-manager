@@ -56,3 +56,42 @@ function updateBtnsDelete() {
     });
   }
 }
+
+///// adding new entry
+
+var btnAddEntry = document.getElementById("addEntry");
+btnAddEntry.addEventListener("click", function (evt) {
+  evt.preventDefault();
+  var newEntries = document.getElementsByClassName("newEntry");
+  var fields = "";
+  var values = "";
+  for (let index = 0; index < newEntries.length; index++) {
+    const element = newEntries[index];
+
+    if (fields == "") {
+      fields = fields + element.dataset.key;
+    } else {
+      fields = fields + ", " + element.dataset.key;
+    }
+
+    if (values == "") {
+      values = values + `'${element.value}'`;
+    } else {
+      values = values + ", " + `'${element.value}'`;
+    }
+  }
+  var data = {
+    name: btnAddEntry.dataset.name,
+    fields: fields,
+    values: values,
+  };
+  console.log(data);
+  axios
+    .post("/tables/add/entry", data)
+    .then((res) => {
+      window.location.replace("http://localhost:3000/tables/edit/" + data.name);
+    })
+    .catch(function (error) {
+      alert(error);
+    });
+});

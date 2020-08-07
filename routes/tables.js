@@ -80,9 +80,9 @@ router.post("/", async function (req, res) {
   dbRef.query(sql, function (err, result) {
     if (err) {
       console.log(err);
-      res.sendStatus(500);
+      res.status(500).send(err.toString());
     } else {
-      res.redirect("/tables");
+      res.send(sql);
     }
   });
   //   console.log(req.body);
@@ -92,13 +92,13 @@ router.post("/delete/:name", async function (req, res) {
   var dbconnection = JSON.parse(req.cookies.dbconnection);
 
   await connectToDB(dbconnection);
-
-  dbRef.query(`DROP TABLE ${req.params.name} ;`, async function (err, result) {
+  var sql = `DROP TABLE ${req.params.name} ;`;
+  dbRef.query(sql, async function (err, result) {
     if (err) {
       console.log(err);
-      res.sendStatus(500);
+      res.status(500).send(err.toString());
     } else {
-      res.redirect("/tables");
+      res.send(sql);
     }
   });
 });
@@ -111,6 +111,63 @@ router.get("/create", async function (req, res) {
   res.render("createTable");
 });
 
+// router.get("/edit/:name", async function (req, res) {
+//   var dbconnection = JSON.parse(req.cookies.dbconnection);
+//   var data = {
+//     fields: [],
+//     name: req.params.name,
+//   };
+//   await connectToDB(dbconnection);
+//   dbRef.query(
+//     `select rdb$field_name from rdb$relation_fields
+//     where rdb$relation_name='${req.params.name}';`,
+//     async function (err, result) {
+//       if (err) {
+//         console.log(err);
+//         res.sendStatus(500);
+//       } else {
+//         data.fields = result;
+
+//         dbRef.query(`SELECT * FROM ${req.params.name}`, function (err, result) {
+//           if (err) {
+//             console.log(err);
+//           } else {
+//             result.forEach((res) => {
+//               Object.keys(res).forEach(function (key, index) {
+//                 // key: the name of the object key
+//                 // index: the ordinal position of the key within the object
+//                 if (Buffer.isBuffer(res[key])) {
+//                   res[key] = res[key].toString("utf8").trim();
+//                 }
+//               });
+//             });
+//             data.data = result;
+//             console.log(data);
+//             console.log(result);
+
+//             dbRef.query(
+//               `select * from RDB$INDICES where RDB$SYSTEM_FLAG = 0;
+//             `,
+//               function (err, result) {
+//                 if (err) {
+//                   res.status(500).send(err.toString());
+//                 } else {
+//                   console.log(result);
+//                   data.indexs = result;
+//                   res.render("editTable", { data: data });
+//                 }
+//               }
+//             );
+
+//             // console.log(result[0].TEXT.toString("utf8"));
+//             // console.log(Buffer.isBuffer(result[0].TEXT));
+//           }
+//         });
+//       }
+//     }
+//   );
+// });
+
 router.get("/edit/:name", async function (req, res) {
   var dbconnection = JSON.parse(req.cookies.dbconnection);
   var data = {
@@ -119,34 +176,70 @@ router.get("/edit/:name", async function (req, res) {
   };
   await connectToDB(dbconnection);
   dbRef.query(
-    `select rdb$field_name from rdb$relation_fields
-    where rdb$relation_name='${req.params.name}';`,
+    "SELECT DISTINCT RDB$RELATION_NAME FROM RDB$RELATIONS WHERE RDB$VIEW_BLR IS NULL AND RDB$SYSTEM_FLAG =0;",
     async function (err, result) {
+      console.log(result);
       if (err) {
         console.log(err);
-        res.sendStatus(500);
       } else {
-        data.fields = result;
-
-        dbRef.query(`SELECT * FROM ${req.params.name}`, function (err, result) {
+        data.tables = result;
+        var sql = `select rdb$field_name, rdb$relation_name from rdb$relation_fields
+        where rdb$relation_name=`;
+        for (let index = 0; index < result.length; index++) {
+          const tableName = result[index].RDB$RELATION_NAME;
+          if (sql[sql.length - 1] == "=") {
+            sql = sql + `'${tableName.trim()}'`;
+          } else {
+            sql = sql + ` OR rdb$relation_name='${tableName.trim()}'`;
+          }
+        }
+        sql = sql + ";";
+        console.log(sql);
+        dbRef.query(sql, async function (err, result) {
           if (err) {
             console.log(err);
+            res.sendStatus(500);
           } else {
-            result.forEach((res) => {
-              Object.keys(res).forEach(function (key, index) {
-                // key: the name of the object key
-                // index: the ordinal position of the key within the object
-                if (Buffer.isBuffer(res[key])) {
-                  res[key] = res[key].toString("utf8").trim();
-                }
-              });
-            });
-            data.data = result;
-            console.log(data);
+            data.fields = result;
             console.log(result);
-            res.render("editTable", { data: data });
-            // console.log(result[0].TEXT.toString("utf8"));
-            // console.log(Buffer.isBuffer(result[0].TEXT));
+            dbRef.query(`SELECT * FROM ${req.params.name}`, function (
+              err,
+              result
+            ) {
+              if (err) {
+                console.log(err);
+              } else {
+                result.forEach((res) => {
+                  Object.keys(res).forEach(function (key, index) {
+                    // key: the name of the object key
+                    // index: the ordinal position of the key within the object
+                    if (Buffer.isBuffer(res[key])) {
+                      res[key] = res[key].toString("utf8").trim();
+                    }
+                  });
+                });
+                data.data = result;
+                console.log(data);
+                console.log(result);
+
+                dbRef.query(
+                  `select * from RDB$INDICES where RDB$SYSTEM_FLAG = 0;
+                `,
+                  function (err, result) {
+                    if (err) {
+                      res.status(500).send(err.toString());
+                    } else {
+                      console.log(result);
+                      data.indexs = result;
+                      res.render("editTable", { data: data });
+                    }
+                  }
+                );
+
+                // console.log(result[0].TEXT.toString("utf8"));
+                // console.log(Buffer.isBuffer(result[0].TEXT));
+              }
+            });
           }
         });
       }
@@ -157,32 +250,28 @@ router.get("/edit/:name", async function (req, res) {
 router.post("/delete/:name/:fieldname", async function (req, res) {
   var dbconnection = JSON.parse(req.cookies.dbconnection);
   await connectToDB(dbconnection);
-  dbRef.query(
-    `ALTER TABLE ${req.params.name} DROP ${req.params.fieldname};`,
-    async function (err, result) {
-      if (err) {
-        console.log(err);
-        res.sendStatus(500);
-      } else {
-        res.redirect("/tables/edit/" + req.params.name);
-      }
+  var sql = `ALTER TABLE ${req.params.name} DROP ${req.params.fieldname};`;
+  dbRef.query(sql, async function (err, result) {
+    if (err) {
+      console.log(err);
+      res.status(500).send(err.toString());
+    } else {
+      res.send(sql);
     }
-  );
+  });
 });
 router.post("/add/:name/:fieldname", async function (req, res) {
   var dbconnection = JSON.parse(req.cookies.dbconnection);
   await connectToDB(dbconnection);
-  dbRef.query(
-    `ALTER TABLE ${req.body.tablename} ADD ${req.body.fieldname} ${req.body.datatype} ${req.body.attributes};`,
-    function (err, result) {
-      if (err) {
-        console.log(err);
-        res.sendStatus(500);
-      } else {
-        res.redirect("/tables/edit/" + req.params.name);
-      }
+  var sql = `ALTER TABLE ${req.body.tablename} ADD ${req.body.fieldname} ${req.body.datatype} ${req.body.attributes};`;
+  dbRef.query(sql, function (err, result) {
+    if (err) {
+      console.log(err);
+      res.status(500).send(err.toString());
+    } else {
+      res.send(sql);
     }
-  );
+  });
   // dbRef.query(`insert into TEST (ID, TEXT) values (3,'Anfernee234')`, function (
   //   err,
   //   result
@@ -198,16 +287,14 @@ router.post("/add/entry", async function (req, res) {
   var dbconnection = JSON.parse(req.cookies.dbconnection);
   await connectToDB(dbconnection);
   var body = req.body;
-  dbRef.query(
-    `insert into ${body.name} (${body.fields}) values (${req.body.values})`,
-    function (err, result) {
-      if (err) {
-        console.log(err);
-        res.sendStatus(500);
-      } else {
-        res.redirect("/tables/edit/" + body.name);
-      }
+  var sql = `insert into ${body.name} (${body.fields}) values (${req.body.values})`;
+  dbRef.query(sql, function (err, result) {
+    if (err) {
+      console.log(err);
+      res.status(500).send(err.toString());
+    } else {
+      res.send(sql);
     }
-  );
+  });
 });
 module.exports = router;

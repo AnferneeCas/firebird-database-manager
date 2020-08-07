@@ -1,5 +1,7 @@
 <html lang="en">
   <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
     <link
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -12,158 +14,327 @@
   </head>
   <body>
     <%- include('navbar'); %>
-    <h3><%= data.name %></h3>
 
-    <h3>Campos</h3>
+    <p class="display-4 ml-5">  Tabla: <%= data.name %></p>
 
-    <table class="table table-dark" id="table">
-      <thead>
-        <tr>
-          <th scope="col" class="text-center">Nombre de campo</th>
-          <!-- <th scope="col" class="text-center">Tipo de dato</th>
-          <th scope="col" class="text-center">opciones de campo</th> -->
-          <th scope="col" class="text-center">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for(var i=0; i<data.fields.length; i++) {%>
-         
-           <tr>
-               <td class="text-center"> <%= data.fields[i].RDB$FIELD_NAME %> </td>
-               <td class="text-center">
-                  
-                       <button data-tablename="<%= data.name %>" data-columnname="<%= data.fields[i].RDB$FIELD_NAME %>" class="btn btn-danger deleteColumn">Borrar</button>
-                  
-               </td>
-           </tr>
-         <% } %>
-
-
-      </tbody>
-    </table>
-
-    <h3>Agregar campos</h3>
 
     <div class="container">
-      <form>
-        <div class="form-group row">
-          <label for="inputEmail3" class="col-sm-2 col-form-label"
-            >Nombre de campo</label
-          >
-          <div class="col-sm-10">
-            <input type="text" class="form-control" id="nombreCampo" />
-          </div>
+      <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+          <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Campos</a>
+          <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Registro</a>
+          <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Indices</a>
         </div>
-        <div class="form-group row">
-          <label for="inputPassword3" class="col-sm-2 col-form-label"
-            >Tipo de dato</label
-          >
-          <div class="col-sm-10">
-            <select class="form-control" id="datatypeCampo">
-              <option>INTEGER</option>
-              <option>DECIMAL</option>
-              <option>VARCHAR(256)</option>
-            </select>
-          </div>
-        </div>
+      </nav>
+      <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab"> <h3>Campos</h3>
 
-        <div class="form-group row">
-          <div class="col-sm-2">Checkbox</div>
-          <div class="col-sm-10">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="primarykey" />
-              <label class="form-check-label" for="gridCheck1">
-                Primary key
-              </label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="notnull" />
-              <label class="form-check-label" for="gridCheck1">
-                Not null
-              </label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="unique" />
-              <label class="form-check-label" for="gridCheck1">
-                unique
-              </label>
-            </div>
-          </div>
-        </div>
-        <div class="form-group row">
-          <div class="col-sm-10">
-            <button type="submit" id="createBtn" data-tablename="<%= data.name %>" class="btn btn-primary">
-              Agregar campo
-            </button>
-          </div>
-        </div>
+          <table class="table table-dark" id="table">
+            <thead>
+              <tr>
+                <th scope="col" class="text-center">Nombre de campo</th>
+                <!-- <th scope="col" class="text-center">Tipo de dato</th>
+                <th scope="col" class="text-center">opciones de campo</th> -->
+                <th scope="col" class="text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for(var i=0; i<data.fields.length; i++) {%>
+                <% if(data.fields[i].RDB$RELATION_NAME.trim() == data.name) {%>
+                  <tr>
+                    <td class="text-center"> <%= data.fields[i].RDB$FIELD_NAME %> </td>
+                    <td class="text-center">
 
-      </form>
-    </div>
- <table class="table table-dark" id="table">
-      <thead>
-        <tr>
-          
-          <% for(var i=0; i<data.fields.length; i++) {%>
-           
-           
-           
-              <th scope="col" class="text-center"> <%= data.fields[i].RDB$FIELD_NAME %></th>
-       
-  
-       
-         
-         
-        
-        <% } %>  
-        <th scope="col" class="text-center">Acciones</th>   
-        </tr>
-      </thead>
-      <tbody>
-        <% for(var i=0; i<data.data.length; i++) {%>
-          <tr>
-            <% Object.keys(data.data[i]).forEach(function(key) { %> 
-           
-              <td class="text-center"> <%= data.data[i][key] %> </td>
-          <% }) %>
-  
-       
-          <td class="text-center"><button class="btn btn-danger deleteEntry" data-object="<%= JSON.stringify(data.data[i])%>">Borrar</button></td>
-          </tr>
+                            <button data-tablename="<%= data.name %>" data-columnname="<%= data.fields[i].RDB$FIELD_NAME %>" class="btn btn-danger deleteColumn">Borrar</button>
+
+                    </td>
+                </tr>
+                  <% }%>
+
+
+               <% } %>
+
+
+            </tbody>
+          </table>
+          <h3>Agregar campos</h3>
+
+          <div class="container">
+            <form>
+              <div class="form-group row">
+                <label for="inputEmail3" class="col-sm-2 col-form-label"
+                  >Nombre de campo</label
+                >
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="nombreCampo" />
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="inputPassword3" class="col-sm-2 col-form-label"
+                  >Tipo de dato</label
+                >
+                <div class="col-sm-10">
+                  <select class="form-control" id="datatypeCampo">
+                    <option>INTEGER</option>
+                    <option>DECIMAL</option>
+                    <option>VARCHAR(256)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <div class="col-sm-2">Checkbox</div>
+                <div class="col-sm-10">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="primarykey" />
+                    <label class="form-check-label" for="gridCheck1">
+                      Primary key
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="notnull" />
+                    <label class="form-check-label" for="gridCheck1">
+                      Not null
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="unique" />
+                    <label class="form-check-label" for="gridCheck1">
+                      unique
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-sm-10">
+                  <button type="submit" id="createBtn" data-tablename="<%= data.name %>" class="btn btn-primary">
+                    Agregar campo
+                  </button>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab"> <table class="table table-dark" id="table">
+          <thead>
+            <tr>
+
+              <% for(var i=0; i<data.fields.length; i++) {%>
+
+                <% if(data.fields[i].RDB$RELATION_NAME.trim() == data.name) {%>
+                  <th scope="col" class="text-center"> <%= data.fields[i].RDB$FIELD_NAME %></th>
+                  <% }%>
+
+
+
+
+
+
+
+
+            <% } %>
+            <th scope="col" class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for(var i=0; i<data.data.length; i++) {%>
+              <tr>
+                <% Object.keys(data.data[i]).forEach(function(key) { %>
+
+                  <td class="text-center"> <%= data.data[i][key] %> </td>
+              <% }) %>
+
+
+              <td class="text-center"><button class="btn btn-danger deleteEntry" data-object="<%= JSON.stringify(data.data[i])%>">Borrar</button></td>
+              </tr>
+            <% } %>
+
+
+
+
+            <tr>
+            <% for(var i=0; i<data.fields.length; i++) {%>
+
+
+
+
+
+
+              <% if(data.fields[i].RDB$RELATION_NAME.trim() == data.name) {%>
+                <td class="text-center">
+
+
+                  <input type="text" class="form-control newEntry" data-key="<%=data.fields[i].RDB$FIELD_NAME%>" >
+
+                   </td>
+                <% }%>
+
+
+
+
+
         <% } %>
-         
+        <td class="text-center"><button class="btn btn-success addEntry" id="addEntry"data-name="<%= data.name%>" data-object="<%= JSON.stringify(data.data[i])%>">Agregar</button></td>
+      </tr>
+          </tbody>
+        </table></div>
+        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
 
 
 
-        <tr>
-        <% for(var i=0; i<data.fields.length; i++) {%>
-           
-           
-           
-          
-   
-
-   
-     
-      <td class="text-center"> 
-
-          
-        <input type="text" class="form-control newEntry" data-key="<%=data.fields[i].RDB$FIELD_NAME%>" >
-     
-         </td>
-  
-     
-    
-    <% } %>  
-    <td class="text-center"><button class="btn btn-success addEntry" id="addEntry"data-name="<%= data.name%>" data-object="<%= JSON.stringify(data.data[i])%>">Agregar</button></td>
-
-  </tr>
-     
-        
+          <table class="table table-dark" id="table">
+            <thead>
+              <tr>
 
 
-      </tbody>
-    </table>
+
+
+
+                    <th scope="col" class="text-center"> Nombre</th>
+
+
+
+
+
+
+
+              <th scope="col" class="text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for(var i=0; i<data.indexs.length; i++) {%>
+                <% if(data.indexs[i]['RDB$RELATION_NAME'].trim()==data.name ){%>
+
+                <tr>
+
+
+                    <td class="text-center"> <%= data.indexs[i]['RDB$INDEX_NAME'] %> </td>
+
+
+
+                <td class="text-center"><button class="btn btn-danger deleteIndex" data-index="<%=data.indexs[i]['RDB$INDEX_NAME'] %>">Borrar</button></td>
+                </tr>
+                <%  } %>
+              <% } %>
+
+
+
+
+              <tr>
+
+
+        </tr>
+            </tbody>
+          </table>
+<label for="">Nombre</label>
+            <input type="text" class="form-control" id='indexName'>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="exampleRadios"
+                id="indexRadio"
+                value="index"
+                checked
+              />
+              <label class="form-check-label" for="exampleRadios1">
+                Indice
+              </label>
+            </div>
+            <div class="form-check">
+              <input
+                name="exampleRadios"
+                class="form-check-input"
+                id="primarykeyRadio"
+                type="radio"
+                value="primarykey"
+                data-data="<%= JSON.stringify(data.fields) %>"
+                data-name = "<%=data.name%>"
+              />
+              <label class="form-check-label" for="exampleRadios2">
+                Llave Primaria
+              </label>
+            </div>
+            <div class="form-check">
+              <input
+                name="exampleRadios"
+                class="form-check-input"
+                id="foreignkeyRadio"
+                type="radio"
+                value="foreignkey"
+                data-data="<%= JSON.stringify(data.fields) %>"
+
+              />
+              <label class="form-check-label" for="exampleRadios2">
+                Llave Foranea
+              </label>
+            </div>
+            <div class="form-group">
+              <label for=""> Campo:</label>
+              <select class="form-control" id="indexField" >
+                <% for(var i=0; i<data.fields.length; i++) {%>
+                  <% if(data.fields[i].RDB$RELATION_NAME.trim() == data.name) {%>
+                    <option><%= data.fields[i].RDB$FIELD_NAME %></option>
+
+                    <% }%>
+
+
+
+                  <% } %>
+
+
+
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="">Tabla Destino</label>
+              <select class="form-control" id="tableDestination" disabled   data-data="<%= JSON.stringify(data.fields) %>">
+                <option></option>
+                <% for(var i=0; i<data.tables.length; i++) {%>
+                  <% if(data.fields[i].RDB$RELATION_NAME.trim() != data.name) {%>
+                    <option><%= data.tables[i].RDB$RELATION_NAME.trim() %></option>
+
+                    <% }%>
+
+                <% } %>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="">Columna Destino</label>
+              <select class="form-control" id="ColumnaDestination" disabled>
+
+
+              </select>
+            </div>
+
+
+            <div class="form-group">
+              <label for="">Columna Auxiliar</label>
+              <select class="form-control" id="Columna2Destination" disabled>
+
+
+              </select>
+            </div>
+
+              <div class="form-group">
+                <button  id="createIndex" data-table="<%= data.name %>" class="btn btn-info">Crear Index</button>
+              </div>
+        </div>
+      </div>
+
+    </div>
+
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
     <script src="/js/editTable.js"></script>
   </body>

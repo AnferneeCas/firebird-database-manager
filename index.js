@@ -17,6 +17,8 @@ var db = Firebird.attach(options, function (err, db) {
 //IMPORTING ROUTE
 const tables = require("./routes/tables");
 const triggers = require("./routes/triggers");
+const users = require("./routes/user");
+const index = require("./routes/index");
 //Express config
 var cookieParser = require("cookie-parser");
 const path = require("path");
@@ -31,6 +33,8 @@ app.use(express.urlencoded({ extended: true }));
 //Adding routes
 app.use("/tables", tables);
 app.use("/triggers", triggers);
+app.use("/users", users);
+app.use("/index", index);
 app.use(express.static(path.join(__dirname, "public")));
 
 //main
@@ -42,6 +46,11 @@ app.post("/connect", function (req, res) {
   console.log(JSON.stringify(req.body));
   res.cookie("dbconnection", JSON.stringify(req.body));
   res.redirect("/tables");
+});
+
+app.post("/logout", function (req, res) {
+  res.clearCookie("dbconnection");
+  res.redirect("/");
 });
 
 app.listen("3000");

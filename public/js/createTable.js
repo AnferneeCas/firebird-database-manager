@@ -65,6 +65,7 @@ btnCrear.addEventListener("click", function (evt) {
   axios
     .post("/tables", tableData)
     .then(function (response) {
+      alert(response.data);
       window.location.replace("http://localhost:3000/tables");
     })
     .catch(function (error) {

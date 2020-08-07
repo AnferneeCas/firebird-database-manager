@@ -15,11 +15,78 @@
     <div class="jumbotron jumbotron-fluid">
       <div class="container">
         <h1 class="display-4">Triggers</h1>
-        <p class="lead">
-          This is a modified jumbotron that occupies the entire horizontal space
-          of its parent.
-        </p>
       </div>
     </div>
+
+    <div class="container">
+      <a
+        href="http://localhost:3000/triggers/create/trigger"
+        class="btn btn-info m-1"
+        >Crear trigger</a
+      >
+      <table class="table table-dark">
+        <thead>
+          <tr>
+            <th scope="col" class="text-center">#</th>
+            <th scope="col" class="text-center">Trigger name</th>
+            <th scope="col" class="text-center">Table name</th>
+            <th scope="col" class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%for(var i = 0 ; i< data.length;i++){ %>
+          <tr>
+            <td class="text-center"><%=i%></td>
+            <td class="text-center"><%=data[i].TRIGGER_NAME %></td>
+            <td class="text-center"><%=data[i].TABLE_NAME %></td>
+            <td class="text-center">
+              <button
+                class="btn btn-danger btn-borrar"
+                data-table="<%=data[i].TABLE_NAME %>"
+                data-trigger="<%=data[i].TRIGGER_NAME %>"
+              >
+                Borrar
+              </button>
+
+              <form
+                method="GET"
+                style="display: inline;"
+                action="/triggers/<%=data[i].TRIGGER_NAME%>"
+              >
+                <button
+                  class="btn btn-warning"
+                  data-table="<%=data[i].TABLE_NAME %>"
+                  data-trigger="<%=data[i].TRIGGER_NAME %>"
+                >
+                  Editar
+                </button>
+              </form>
+            </td>
+          </tr>
+          <% } %>
+
+          <!-- <tr>
+            <th scope="row">1</th>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+          </tr>
+          <tr>
+            <th scope="row">2</th>
+            <td>Jacob</td>
+            <td>Thornton</td>
+            <td>@fat</td>
+          </tr>
+          <tr>
+            <th scope="row">3</th>
+            <td>Larry</td>
+            <td>the Bird</td>
+            <td>@twitter</td>
+          </tr> -->
+        </tbody>
+      </table>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+    <script src="/js/listTriggers.js"></script>
   </body>
 </html>

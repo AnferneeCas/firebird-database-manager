@@ -54,6 +54,8 @@ mainBtn.addEventListener("click", function (evt) {
         window.location.replace("http://localhost:3000/triggers");
       })
       .catch((err) => {
+        console.log(err);
+
         alert(err);
       });
   }

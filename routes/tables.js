@@ -80,7 +80,7 @@ router.post("/", async function (req, res) {
   dbRef.query(sql, function (err, result) {
     if (err) {
       console.log(err);
-      res.status(500).send(err.toString());
+      res.send(err.toString());
     } else {
       res.send(sql);
     }
@@ -96,7 +96,7 @@ router.post("/delete/:name", async function (req, res) {
   dbRef.query(sql, async function (err, result) {
     if (err) {
       console.log(err);
-      res.status(500).send(err.toString());
+      res.send(err.toString());
     } else {
       res.send(sql);
     }
@@ -227,7 +227,7 @@ router.get("/edit/:name", async function (req, res) {
                 `,
                   function (err, result) {
                     if (err) {
-                      res.status(500).send(err.toString());
+                      res.send(err.toString());
                     } else {
                       console.log(result);
                       data.indexs = result;
@@ -254,7 +254,7 @@ router.post("/delete/:name/:fieldname", async function (req, res) {
   dbRef.query(sql, async function (err, result) {
     if (err) {
       console.log(err);
-      res.status(500).send(err.toString());
+      res.send(err.toString());
     } else {
       res.send(sql);
     }
@@ -267,7 +267,7 @@ router.post("/add/:name/:fieldname", async function (req, res) {
   dbRef.query(sql, function (err, result) {
     if (err) {
       console.log(err);
-      res.status(500).send(err.toString());
+      res.send(err.toString());
     } else {
       res.send(sql);
     }

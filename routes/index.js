@@ -43,7 +43,7 @@ router.post("/index", async function (req, res) {
   dbRef.query(sql, async function (err, result) {
     if (err) {
       console.log(err);
-      res.status(500).send(err.toString());
+      res.send(err.toString());
     } else {
       console.log(result);
       res.send(sql);
@@ -62,7 +62,7 @@ router.delete("/index/:indexName", async function (req, res) {
   dbRef.query(sql, async function (err, result) {
     if (err) {
       console.log(err);
-      res.status(500).send(err.toString());
+      res.send(err.toString());
     } else {
       console.log(result);
       res.send(sql);
@@ -82,7 +82,7 @@ router.post("/index/foreign", async function (req, res) {
   dbRef.query(sql, async function (err, result) {
     if (err) {
       console.log(err);
-      res.status(500).send(err.toString());
+      res.send(err.toString());
     } else {
       console.log(result);
       res.send(sql);
@@ -99,7 +99,7 @@ router.post("/index/primary", async function (req, res) {
   dbRef.query(sql, async function (err, result) {
     if (err) {
       console.log(err);
-      res.status(500).send(err.toString());
+      res.send(err.toString());
     } else {
       console.log(result);
       res.send(sql);

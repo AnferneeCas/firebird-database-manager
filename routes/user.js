@@ -45,7 +45,7 @@ router.get("/", async function (req, res) {
     if (err) {
       console.log(err);
 
-      res.status(500).send(err.toString());
+      res.send(err.toString());
     } else {
       res.render("users", { data: result });
     }
@@ -61,11 +61,11 @@ router.post("/", async function (req, res) {
   var sql = `CREATE USER ${body.user} PASSWORD '${body.pass}' GRANT ADMIN ROLE; `;
   dbRef.query(sql, function (err, result) {
     if (err) {
-      res.status(500).send(err.toString());
+      res.send(err.toString());
     } else {
       dbRef.query(`grant rdb$admin to ${body.user}`, function (err, result) {
         if (err) {
-          res.status(500).send(err.toString());
+          res.send(err.toString());
         } else {
           res.send(sql);
         }
@@ -83,12 +83,12 @@ router.delete("/:id", async function (req, res) {
   dbRef.query(sql, function (err, result) {
     if (err) {
       console.log(err);
-      res.status(500).send(err.toString());
+      res.send(err.toString());
     } else {
       dbRef.query(`drop user ${req.params.id};`, function (err, result) {
         if (err) {
           console.log(err);
-          res.status(500).send(err.toString());
+          res.send(err.toString());
         } else {
           res.send(sql);
           console.log(result);

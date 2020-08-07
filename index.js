@@ -19,6 +19,7 @@ const tables = require("./routes/tables");
 const triggers = require("./routes/triggers");
 const users = require("./routes/user");
 const index = require("./routes/index");
+const view = require("./routes/views");
 //Express config
 var cookieParser = require("cookie-parser");
 const path = require("path");
@@ -35,6 +36,7 @@ app.use("/tables", tables);
 app.use("/triggers", triggers);
 app.use("/users", users);
 app.use("/index", index);
+app.use("/views", view);
 app.use(express.static(path.join(__dirname, "public")));
 
 //main

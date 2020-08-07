@@ -65,7 +65,7 @@ router.post("/", async function (req, res) {
   dbRef.query(sql, function (err, result) {
     if (err) {
       console.log(err);
-      res.status(500).send(err.toString());
+      res.send(err.toString());
     } else {
       console.log(result);
 
@@ -99,7 +99,7 @@ router.post("/:trigger", async function (req, res) {
   dbRef.query(sql, function (err, result) {
     if (err) {
       console.log(err);
-      res.status(500).send(err.toString());
+      res.send(err.toString());
     } else {
       console.log(result);
       res.send(sql);
@@ -150,7 +150,7 @@ router.patch("/trigger", async function (req, res) {
   dbRef.query(sql, function (err, result) {
     if (err) {
       console.log(err);
-      res.status(500).send(err.toString());
+      res.send(err.toString());
     } else {
       res.send(sql);
       // res.render("editTrigger", { data: result[0] });

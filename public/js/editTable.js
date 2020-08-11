@@ -240,3 +240,47 @@ tableDestination.addEventListener("change", function (e) {
   // opt.innerHTML = i;
   // select.appendChild(opt);
 });
+
+var checkName = document.getElementById("checkName");
+var checkCode = document.getElementById("checkCode");
+var btnCheck = document.getElementById("btnCheck");
+var deleteChecks = document.getElementsByClassName("deleteCheck");
+
+btnCheck.addEventListener("click", function (e) {
+  var code = checkCode.value;
+  var name = checkName.value;
+  var data = {
+    code,
+    name,
+    table: btnCheck.dataset.table,
+  };
+  console.log("check");
+  axios
+    .post(`/tables/create/check`, data)
+    .then((response) => {
+      alert(response.data);
+      window.location.reload();
+    })
+    .catch((err) => {
+      alert(err.data);
+    });
+});
+
+for (let index = 0; index < deleteChecks.length; index++) {
+  const element = deleteChecks[index];
+  element.addEventListener("click", function (e) {
+    var table = element.dataset.table;
+    var check = element.dataset.check;
+    axios
+      .delete(`http://localhost:3000/tables/delete/check/${table}/${check}`)
+      .then((response) => {
+        alert(response.data);
+        window.location.reload();
+      })
+      .catch((err) => {
+        alert(err.data);
+      });
+  });
+}
+
+// /delete/check/:table/:name

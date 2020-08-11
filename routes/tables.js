@@ -35,7 +35,32 @@ const express = require("express");
 let router = express.Router();
 
 //routes /tables
-
+router.post("/create/check", async function (req, res) {
+  var dbconnection = JSON.parse(req.cookies.dbconnection);
+  await connectToDB(dbconnection);
+  var body = req.body;
+  // var sql = `ALTER TABLE ${body.table}
+  // ADD CONSTRAINT ${body.name}
+  // CHECK (${body.code})
+  //       `;
+  // console.log(sql);
+  // dbRef.query(sql, function (err, result) {
+  //   if (err) {
+  //     console.log(err);
+  //     res.send(err.toString());
+  //   } else {
+  //     res.send(sql);
+  //   }
+  // });
+  var sql = `select *
+  from rdb$relations
+ `;
+  dbRef.query(sql, function (err, result) {
+    console.log(result);
+    console.log(err);
+  });
+  console.log("chekc");
+});
 //OBTENER TODAS LAS TABLAS
 router.get("/", async function (req, res) {
   var dbconnection = JSON.parse(req.cookies.dbconnection);
@@ -88,6 +113,20 @@ router.post("/", async function (req, res) {
   //   console.log(req.body);
 });
 
+router.delete("/delete/check/:table/:name", async function (req, res) {
+  var dbconnection = JSON.parse(req.cookies.dbconnection);
+
+  await connectToDB(dbconnection);
+  var sql = `alter table ${req.params.table} drop constraint ${req.params.name};`;
+  dbRef.query(sql, function (err, result) {
+    if (err) {
+      console.log(err);
+      res.send(err.toString());
+    } else {
+      res.send(sql);
+    }
+  });
+});
 router.post("/delete/:name", async function (req, res) {
   var dbconnection = JSON.parse(req.cookies.dbconnection);
 
@@ -231,7 +270,22 @@ router.get("/edit/:name", async function (req, res) {
                     } else {
                       console.log(result);
                       data.indexs = result;
-                      res.render("editTable", { data: data });
+
+                      dbRef.query(
+                        `SELECT RDB$CONSTRAINT_NAME
+                      FROM RDB$RELATION_CONSTRAINTS  where RDB$RELATION_NAME = '${req.params.name.trim()}' `,
+                        function (err, result) {
+                          if (err) {
+                            res.send(err.toString());
+                          } else {
+                            console.log(result);
+                            data.checks = result;
+                            res.render("editTable", { data: data });
+                          }
+                        }
+                      );
+
+                      // res.render("editTable", { data: data });
                     }
                   }
                 );
@@ -291,10 +345,11 @@ router.post("/add/entry", async function (req, res) {
   dbRef.query(sql, function (err, result) {
     if (err) {
       console.log(err);
-      res.status(500).send(err.toString());
+      res.send(err.toString());
     } else {
       res.send(sql);
     }
   });
 });
+
 module.exports = router;

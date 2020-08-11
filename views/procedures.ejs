@@ -1,0 +1,64 @@
+<html lang="en">
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tables</title>
+  </head>
+  <body>
+    <%- include('navbar'); %>
+    <div class="jumbotron jumbotron-fluid">
+      <div class="container">
+        <h1 class="display-4">Procediminetos Almacenados</h1>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="d-flex justify-content-end">
+        <form action="/procedures/create"  style="margin-right:25px;" method="GET">
+          <button class="btn btn-info">Agregar</button>
+        </form>
+      </div>
+      <table class="table table-dark">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nombre de procedimiento</th>
+            <th scope="col" class="text-center">Acciones</th>
+
+          </tr>
+        </thead>
+        <tbody>
+
+          <% for(var i=0; i<data.length; i++) {%>
+
+            <tr>
+              <th scope="row"><%=i%></th>
+              <td class=""><%=data[i].RDB$PROCEDURE_NAME%></td>
+              <form method="GET" style="display: inline;" action="/procedures/edit/<%=data[i].RDB$PROCEDURE_NAME%>" >
+                <td class="text-center"><button class="btn btn-success">Editar</button>
+              </form>
+
+
+                  <button class="btn btn-danger btn-borrar" data-name='<%=data[i].RDB$PROCEDURE_NAME%>'>Borrar</button>
+
+
+
+              </td>
+            </tr>
+         <% } %>
+
+        </tbody>
+      </table>
+    </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+    <script src="/js/procedures.js"></script>
+  </body>
+</html>

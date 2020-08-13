@@ -95,7 +95,8 @@ router.post("/index/primary", async function (req, res) {
 
   await connectToDB(dbconnection);
   var body = req.body;
-  var sql = `alter table ${body.table} add constraint ${body.name} primary key (${body.field},${body.aux});`;
+  var sql = `alter table ${body.table} add constraint ${body.name} primary key (${body.field});`;
+  console.log(sql);
   dbRef.query(sql, async function (err, result) {
     if (err) {
       console.log(err);

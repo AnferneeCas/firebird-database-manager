@@ -39,27 +39,27 @@ router.post("/create/check", async function (req, res) {
   var dbconnection = JSON.parse(req.cookies.dbconnection);
   await connectToDB(dbconnection);
   var body = req.body;
-  // var sql = `ALTER TABLE ${body.table}
-  // ADD CONSTRAINT ${body.name}
-  // CHECK (${body.code})
-  //       `;
-  // console.log(sql);
-  // dbRef.query(sql, function (err, result) {
-  //   if (err) {
-  //     console.log(err);
-  //     res.send(err.toString());
-  //   } else {
-  //     res.send(sql);
-  //   }
-  // });
-  var sql = `select *
-  from rdb$relations
- `;
+  var sql = `ALTER TABLE ${body.table}
+  ADD CONSTRAINT ${body.name}
+  CHECK (${body.code})
+        `;
+  console.log(sql);
   dbRef.query(sql, function (err, result) {
-    console.log(result);
-    console.log(err);
+    if (err) {
+      console.log(err);
+      res.send(err.toString());
+    } else {
+      res.send(sql);
+    }
   });
-  console.log("chekc");
+  //   var sql = `select *
+  //   from rdb$relations
+  //  `;
+  //   dbRef.query(sql, function (err, result) {
+  //     console.log(result);
+  //     console.log(err);
+  //   });
+  //   console.log("chekc");
 });
 //OBTENER TODAS LAS TABLAS
 router.get("/", async function (req, res) {
@@ -224,6 +224,7 @@ router.get("/edit/:name", async function (req, res) {
         data.tables = result;
         var sql = `select rdb$field_name, rdb$relation_name from rdb$relation_fields
         where rdb$relation_name=`;
+
         for (let index = 0; index < result.length; index++) {
           const tableName = result[index].RDB$RELATION_NAME;
           if (sql[sql.length - 1] == "=") {
@@ -318,6 +319,7 @@ router.post("/add/:name/:fieldname", async function (req, res) {
   var dbconnection = JSON.parse(req.cookies.dbconnection);
   await connectToDB(dbconnection);
   var sql = `ALTER TABLE ${req.body.tablename} ADD ${req.body.fieldname} ${req.body.datatype} ${req.body.attributes};`;
+  console.log(sql);
   dbRef.query(sql, function (err, result) {
     if (err) {
       console.log(err);
